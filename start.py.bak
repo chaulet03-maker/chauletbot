@@ -1,0 +1,24 @@
+import asyncio, os, sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE = Path(__file__).resolve().parent
+load_dotenv(BASE / ".env")
+os.chdir(BASE)
+
+sys.path.insert(0, str(BASE))
+
+from tradebot.config import load_config
+from tradebot.engine import TradingApp
+
+async def main():
+    cfg = load_config(os.getenv("MODE"))
+    app = TradingApp(cfg)
+    await app.start()
+    await app.run()
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass

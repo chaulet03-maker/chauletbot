@@ -47,3 +47,37 @@ py start.py
 - **Persistencia** real (state.json): posiciones, allow_new_entries, equity snapshot.
 - **Command Queue** via `data/cmd_queue.json` (Telegram → Engine).
 - **Webhooks** en `telemetry/webhooks.py`.
+
+
+---
+
+## Cambios aplicados en esta versión
+# Cambios aplicados (ULTRA)
+- Telegram ahora **acepta comandos** (`/start`, `/help`, etc.) y **responde a texto y comandos**.
+- Si falta `TELEGRAM_BOT_TOKEN`, se **loggea error** en vez de fallar silencioso.
+- Carga de `.env` más robusta: busca en el **cwd** y en el **root del proyecto**.
+- Mensaje de **startup** ya estaba implementado en `engine.py` y se enviará si `TELEGRAM_CHAT_ID` y token son válidos.
+- Agregados:
+  - `scripts/run_forever.sh`: reinicia el bot si se cae (modo "siempre encendido").
+  - `systemd/bot-bestia-ultra.service`: unidad para systemd (install opcional).
+  
+## Cómo usar
+1. Crear `.env` en la raíz del proyecto (misma carpeta donde está `bot/`):
+```
+TELEGRAM_BOT_TOKEN=tu_token
+TELEGRAM_CHAT_ID=123456789
+```
+2. Iniciar:
+```
+python3 -m bot.engine
+```
+Deberías recibir: `🤖 BESTIA ULTRA online (PAPER/LIVE)` en Telegram.
+
+### Siempre encendido (opciones)
+- **Bash**: `./scripts/run_forever.sh`
+- **systemd** (copiar repo a `~/bestia-ultra` o ajustar `WorkingDirectory`):
+```
+cp systemd/bot-bestia-ultra.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now bot-bestia-ultra.service
+```
